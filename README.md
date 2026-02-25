@@ -17,15 +17,19 @@ outputs in a bad state for the next `skip test` run on Android. A common failure
 
 - `PackageSupportTest.kt:3:13 Unresolved reference 'lib'`
 
-Reproduction steps:
+## Reproduction steps:
 
 ```bash
 rm -rf .build
 swift build
-ANDROID_SERIAL=R5CXC1DKRNA skip test --plain --verbose # Passes (Save for JUnit folder discrepancies noted in https://github.com/orgs/skiptools/discussions/624)
+ANDROID_SERIAL=DEVICEREF skip test --plain --verbose # Passes (Save for JUnit folder discrepancies noted in https://github.com/orgs/skiptools/discussions/624)
 
-skip android build --plain --verbose
-ANDROID_SERIAL=R5CXC1DKRNA skip test --plain --verbose # Fails w/ 'Unresolved reference'
+skip android build --plain --verbose # Note the 'warning: removing stale output file...' messages
+ANDROID_SERIAL=DEVICEREF skip test --plain --verbose # Fails w/ 'Unresolved reference'
+
+rm -rf .build
+swift build
+ANDROID_SERIAL=DEVICEREF skip test --plain --verbose # Passes again
 ```
 
 Desired behavior:
