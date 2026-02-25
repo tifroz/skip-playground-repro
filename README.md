@@ -23,3 +23,24 @@ Kotlin JUnit tests in the Robolectric Android simulation environment.
 
 Parity testing can be performed with `skip test`,
 which will output a table of the test results for both platforms.
+
+## Known Issue (Android Build -> Parity Test)
+
+In this repro package, running `skip android build` can leave transpiled dependency
+outputs in a bad state for the next `skip test` run on Android. A common failure is:
+
+- `PackageSupportTest.kt:3:13 Unresolved reference 'lib'`
+
+Reproduction steps:
+
+```bash
+rm -rf .build
+swift build
+ANDROID_SERIAL=R5CXC1DKRNA skip test --plain --verbose
+skip android build --plain --verbose
+ANDROID_SERIAL=R5CXC1DKRNA skip test --plain --verbose
+```
+
+Detailed investigation notes are in:
+
+- `.docs/skipplayground-android-test-failure-notes.md`
